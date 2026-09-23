@@ -1,0 +1,43 @@
+{
+  "case_id": "case-3",
+  "periods": [
+    "mon-am",
+    "mon-pm"
+  ],
+  "locations": [
+    {
+      "id": "desk-1",
+      "capacity": 1
+    },
+    {
+      "id": "desk-2",
+      "capacity": 1
+    }
+  ],
+  "people": [
+    "alice",
+    "bob"
+  ],
+  "rules": [
+    {
+      "id": "R1",
+      "kind": "fixed",
+      "person": "alice",
+      "period": "mon-am",
+      "location": "desk-1"
+    },
+    {
+      "id": "R2",
+      "kind": "forbidden",
+      "location": "desk-1",
+      "period": "mon-am"
+    },
+    {
+      "id": "R3",
+      "kind": "avoid",
+      "person": "bob",
+      "period": "mon-pm",
+      "weight": 4
+    }
+  ]
+}

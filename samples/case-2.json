@@ -1,0 +1,179 @@
+{
+  "case_id": "case-2",
+  "periods": [
+    "mon-am",
+    "mon-pm",
+    "tue-am",
+    "tue-pm",
+    "wed-am",
+    "wed-pm",
+    "thu-am",
+    "thu-pm",
+    "fri-am",
+    "fri-pm"
+  ],
+  "locations": [
+    {
+      "id": "desk-1",
+      "capacity": 1
+    },
+    {
+      "id": "desk-2",
+      "capacity": 1
+    },
+    {
+      "id": "desk-3",
+      "capacity": 1
+    },
+    {
+      "id": "desk-4",
+      "capacity": 1
+    },
+    {
+      "id": "room-a",
+      "capacity": 3
+    },
+    {
+      "id": "room-b",
+      "capacity": 4
+    }
+  ],
+  "people": [
+    "p1",
+    "p2",
+    "p3",
+    "p4",
+    "p5",
+    "p6"
+  ],
+  "rules": [
+    {
+      "id": "R01",
+      "kind": "fixed",
+      "person": "p1",
+      "period": "mon-am",
+      "location": "desk-1"
+    },
+    {
+      "id": "R02",
+      "kind": "fixed",
+      "person": "p2",
+      "period": "tue-pm",
+      "location": "room-a"
+    },
+    {
+      "id": "R03",
+      "kind": "forbidden",
+      "location": "room-a",
+      "period": "wed-am"
+    },
+    {
+      "id": "R04",
+      "kind": "forbidden",
+      "location": "desk-3",
+      "period": "thu-pm"
+    },
+    {
+      "id": "R05",
+      "kind": "no_consecutive",
+      "person": "p3"
+    },
+    {
+      "id": "R06",
+      "kind": "no_consecutive",
+      "person": "p5"
+    },
+    {
+      "id": "R07",
+      "kind": "together",
+      "people": [
+        "p1",
+        "p2"
+      ]
+    },
+    {
+      "id": "R08",
+      "kind": "together",
+      "people": [
+        "p4",
+        "p5"
+      ]
+    },
+    {
+      "id": "R09",
+      "kind": "apart",
+      "people": [
+        "p1",
+        "p3"
+      ]
+    },
+    {
+      "id": "R10",
+      "kind": "apart",
+      "people": [
+        "p2",
+        "p6"
+      ]
+    },
+    {
+      "id": "R11",
+      "kind": "capacity",
+      "location": "room-a",
+      "period": "fri-am",
+      "max": 2
+    },
+    {
+      "id": "R12",
+      "kind": "capacity",
+      "location": "room-b",
+      "period": "mon-pm",
+      "max": 2
+    },
+    {
+      "id": "R13",
+      "kind": "prefer",
+      "person": "p4",
+      "period": "wed-am",
+      "location": "desk-2",
+      "weight": 4
+    },
+    {
+      "id": "R14",
+      "kind": "prefer",
+      "person": "p6",
+      "period": "thu-pm",
+      "location": "room-b",
+      "weight": 6
+    },
+    {
+      "id": "R15",
+      "kind": "prefer",
+      "person": "p3",
+      "period": "fri-am",
+      "location": "desk-1",
+      "weight": 3
+    },
+    {
+      "id": "R16",
+      "kind": "avoid",
+      "person": "p5",
+      "period": "tue-am",
+      "weight": 5
+    },
+    {
+      "id": "R17",
+      "kind": "avoid",
+      "person": "p2",
+      "period": "thu-pm",
+      "weight": 2
+    },
+    {
+      "id": "R18",
+      "kind": "prefer",
+      "person": "p1",
+      "period": "mon-am",
+      "location": "desk-2",
+      "weight": 7
+    }
+  ]
+}

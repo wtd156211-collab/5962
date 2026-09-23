@@ -1,0 +1,13 @@
+cost,0
+alice,mon-am,desk-1
+alice,mon-pm,desk-1
+alice,tue-am,desk-1
+alice,tue-pm,desk-2
+bob,mon-am,desk-2
+bob,mon-pm,none
+bob,tue-am,desk-2
+bob,tue-pm,none
+carol,mon-am,desk-1
+carol,mon-pm,desk-1
+carol,tue-am,desk-1
+carol,tue-pm,desk-2

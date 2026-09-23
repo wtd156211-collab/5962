@@ -1,0 +1,94 @@
+{
+  "case_id": "case-1",
+  "periods": [
+    "mon-am",
+    "mon-pm",
+    "tue-am",
+    "tue-pm"
+  ],
+  "locations": [
+    {
+      "id": "desk-1",
+      "capacity": 1
+    },
+    {
+      "id": "desk-2",
+      "capacity": 1
+    },
+    {
+      "id": "room-a",
+      "capacity": 2
+    }
+  ],
+  "people": [
+    "alice",
+    "bob",
+    "carol"
+  ],
+  "rules": [
+    {
+      "id": "R1",
+      "kind": "fixed",
+      "person": "alice",
+      "period": "mon-am",
+      "location": "desk-1"
+    },
+    {
+      "id": "R2",
+      "kind": "forbidden",
+      "location": "room-a",
+      "period": "mon-pm"
+    },
+    {
+      "id": "R3",
+      "kind": "no_consecutive",
+      "person": "bob"
+    },
+    {
+      "id": "R4",
+      "kind": "together",
+      "people": [
+        "alice",
+        "carol"
+      ]
+    },
+    {
+      "id": "R5",
+      "kind": "apart",
+      "people": [
+        "bob",
+        "carol"
+      ]
+    },
+    {
+      "id": "R6",
+      "kind": "capacity",
+      "location": "room-a",
+      "period": "tue-am",
+      "max": 1
+    },
+    {
+      "id": "R7",
+      "kind": "prefer",
+      "person": "alice",
+      "period": "tue-pm",
+      "location": "desk-2",
+      "weight": 5
+    },
+    {
+      "id": "R8",
+      "kind": "avoid",
+      "person": "bob",
+      "period": "tue-pm",
+      "weight": 3
+    },
+    {
+      "id": "R9",
+      "kind": "prefer",
+      "person": "carol",
+      "period": "mon-am",
+      "location": "desk-1",
+      "weight": 2
+    }
+  ]
+}
