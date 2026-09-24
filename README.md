@@ -94,6 +94,59 @@ samples/case-3.json / case-3.expected.txt    无解实例：fixed 与 forbidden 
 
 case-1 覆盖 `together`、`apart`、`no_consecutive`、`forbidden`、`capacity` 与两条软约束；case-2 的 `R18` 要求 `p1` 在 `mon-am` 坐 `desk-2`，而 `R01` 已把 `p1` 固定在 `desk-1`，所以最优解必须吃下这 7 分——用来验证「软约束是求最优」而不是随便给个可行解。
 
-## 待补的文档
+## 实现说明
 
-实现完成后写清楚：传播是怎么做的、下界怎么算、搜索顺序与多解规则是怎么对齐的、冲突集是怎么求出来的。
+代码在 `scheduler/` 包（只用标准库），测试在 `tests/`（unittest）：
+
+```text
+python -m scheduler samples/case-1.json     # 求解并打印结果
+python -m unittest discover -s tests        # 跑全部测试
+```
+
+### 模型实现
+
+- 变量按下标排列：`人下标 × 时段数 + 时段下标`，即 people 顺序 × periods 顺序；
+  取值用位掩码表示，bit i 是 `locations[i]`，最高位是 `none`，天然对应规定的取值顺序。
+- `scheduler/model.py` 负责解析与校验：引用不存在的 people / periods / locations、
+  硬约束缺 `id`、软约束 `weight` 非正整数等一律抛 `InstanceError`。
+
+### 传播是怎么做的
+
+`scheduler/solver.py` 里每类约束是一个传播器，变量值域一收缩就把监听该变量的
+传播器重新入队，跑到不动点或某个值域变空（失败回溯）：
+
+- `fixed` / `forbidden`：编译期直接收缩值域；
+- `capacity`：按「已定」（值域收缩为单值）计数，超限即失败，达到上限就把该地点
+  从同时段其他人的值域里删掉；
+- `no_consecutive`：相邻时段一方值域里没有 `none`（必须排）时，另一方必须为 `none`；
+- `together`：同组人同一时段的值域取交集；
+- `apart`：已定为某地点的人，把该地点从同组其他人同时段的值域里删掉（`none` 不算）。
+
+### 下界怎么算
+
+每条软约束只涉及一个变量，罚分可以按变量分解：预计算 `penalty[变量][取值]`。
+分支限界的下界 = 已定变量的累积罚分 + 每个未定变量在当前值域上的最小罚分
+（传播收缩值域后下界会自动变紧）。下界不低于当前最优时就剪枝。
+
+### 搜索顺序与多解规则的对齐
+
+深度优先搜索严格按「变量顺序 × 取值顺序」展开，只在遇到**严格更优**的解时替换
+当前最优；剪枝条件也是「下界 ≥ 当前最优」，与「并列最优不替换」等价。因此第一个
+达到最优代价的解就是规定顺序下的第一个最优解，与 README 的多解规则逐字节一致。
+全程无随机、无哈希序依赖，同一实例跑两遍输出逐字节相同（有测试覆盖）。
+
+### 冲突集是怎么求出来的
+
+`scheduler/conflict.py`：只在硬约束上判可满足性（软约束不影响可行与否）。
+从全部硬约束出发，按声明顺序逐条尝试删除，删掉后仍不可满足就永久删除，
+一遍扫描后剩下的就是极小冲突集，按声明顺序输出 id；若删到一条不剩仍不可满足，
+输出 `unsat,base-model`。
+
+### 关于地点容量的一处语义说明
+
+README 前文把 `locations[].capacity` 描述为模型自带的硬约束，但样例的期望结果
+表明它**不**作为独立硬约束生效：case-1 里 alice 与 carol（`together`）在 mon-am
+同坐容量为 1 的 `desk-1`，case-2 里 mon-am 有四人同坐 `desk-1`，期望输出都是
+可行且最优的。因此实现按样例对齐：`locations[].capacity` 只作为 `capacity` 规则的
+默认上限（有效上限 = `min(规则 max, locations[].capacity)`），不单独约束排班；
+`unsat,base-model` 分支按规范保留。
